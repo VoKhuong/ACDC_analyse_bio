@@ -2,13 +2,21 @@ package workflow.steps;
 
 import workflow.Step;
 import workflow.exceptions.TooManyStepsException;
+import workflow.parameters.Action;
+import workflow.parameters.Condition;
 
 public class SimpleStep implements Step {
 	
 	private Step nextStep;
+	private Condition condition;
+	private Action action;
 	
-	public SimpleStep(int a, Step... steps) {
-		// TODO implements closure function as parameter
+	public SimpleStep(Condition condition, Action action, Step... steps) throws TooManyStepsException {
+		this.condition = condition;
+		this.action = action;
+		for(Step step: steps) {
+			this.add(step);
+		}
 	}
 
 	@Override
@@ -52,11 +60,11 @@ public class SimpleStep implements Step {
 		return "";
 	}
 
-	public Step getNextStep() {
+	private Step getNextStep() {
 		return nextStep;
 	}
 
-	public void setNextStep(Step nextStep) {
+	private void setNextStep(Step nextStep) {
 		this.nextStep = nextStep;
 	}
 

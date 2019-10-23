@@ -11,6 +11,7 @@ import workflow.exceptions.TooManyStepsException;
  *
  */
 public interface Step {
+	
 	/**
 	 * add next steps to the current step
 	 * @param steps
