@@ -6,7 +6,7 @@ import workflow.exceptions.TooManyStepsException;
  * high-level basic representation of a workflow
  * @author Vo Lam Nhat Khuong
  * @implNote to be used with a workflow interpreter
- * @version 0.1
+ * @version 0.2
  * @since 11/10/2019
  *
  */
@@ -36,28 +36,33 @@ public interface Step {
 	
 	/**
 	 * execute the operations of the current step
+	 * @param objects data
 	 * @since 11/10/2019
 	 */
-	public void executeActions();
+	public Object[] executeActions(Object... objects);
 	
 	/**
 	 * activate the step
+	 * @param objects data
 	 * @see workflow interpreter
 	 * @since 11/10/2019
 	 * 
 	 */
-	public void activate();
+	public void activate(Object... objects);
 	
 	/**
 	 * verify if the condition is met before running the node
+	 * @param objects data
 	 * @return true if activation condition is met
 	 * @since 11/10/2019
 	 */
-	public boolean validateCondition();
+	public boolean validateCondition(Object... objects);
 	
 	/**
 	 * @return string representation of the current step
 	 * @since 11/10/2019
 	 */
 	public String toString();
+	
+	public int length();
 }

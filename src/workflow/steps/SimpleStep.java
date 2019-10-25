@@ -1,5 +1,7 @@
 package workflow.steps;
 
+import java.util.Arrays;
+
 import workflow.Step;
 import workflow.exceptions.TooManyStepsException;
 import workflow.parameters.Action;
@@ -14,50 +16,63 @@ public class SimpleStep implements Step {
 	public SimpleStep(Condition condition, Action action, Step... steps) throws TooManyStepsException {
 		this.condition = condition;
 		this.action = action;
-		for(Step step: steps) {
-			this.add(step);
-		}
+		this.add(steps);
 	}
 
 	@Override
 	public void add(Step... steps) throws TooManyStepsException {
-		// TODO Auto-generated method stub
-		
+		for(Step step: steps) {
+			this.setNextStep(step);
+			if(steps.length > 1) {
+				Step[] newSteps = Arrays.copyOfRange(steps, 1, steps.length);
+				this.getNextStep().add(newSteps);
+			}
+			break;
+		}
 	}
 
 	@Override
 	public void addLast(Step... steps) throws TooManyStepsException {
-		// TODO Auto-generated method stub
-		
+		if(this.hasNext())
+			this.getNextStep().addLast(steps);
+		else {
+			this.add(steps);
+		}
 	}
 
 	@Override
 	public boolean hasNext() {
-		// TODO Auto-generated method stub
-		return false;
+		return this.nextStep != null;
 	}
 
 	@Override
-	public void executeActions() {
+	public Object[] executeActions(Object... objects) {
+		return this.action.execute(objects);
+	}
+
+	@Override
+	public void activate(Object... objects) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void activate() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public boolean validateCondition() {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean validateCondition(Object... objects) {
+		return this.condition.validate(objects);
 	}
 	
 	@Override
 	public String toString() {
-		return "";
+		if(this.hasNext())
+			return "+ SimpleStep " + this.getNextStep().toString();
+		return "+ SimpleStep ";
+	}
+	
+	@Override
+	public int length() {
+		if(this.hasNext())
+			return 1 + this.getNextStep().length();
+		return 1;
 	}
 
 	private Step getNextStep() {
