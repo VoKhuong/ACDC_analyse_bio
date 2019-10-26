@@ -48,7 +48,7 @@ public interface Step {
 	 * @since 11/10/2019
 	 * 
 	 */
-	public void activate(Object... objects);
+	public Object[] activate(Object... objects);
 	
 	/**
 	 * verify if the condition is met before running the node

@@ -86,4 +86,67 @@ class WorkflowTests {
 			fail("Too Many Steps Exception");
 		}
 	}
+	
+	@Test
+	void linearWorkflowTest() {
+		Action action = new Action() {
+			public Object[] execute(Object...objects) {
+				int cpt = 0;
+				for(Object object: objects) {
+					cpt = (int) object;
+					cpt++;
+				}
+				Object[] result = new Object[1];
+				result[0] = (Object) cpt;
+				return result;
+			}
+		};
+		Condition condition = new Condition() {
+			public boolean validate(Object...objects) {
+				return true;
+			}
+		};
+		
+		try {
+			Step steps = new SimpleStep(condition, action, new SimpleStep(condition, action, new SimpleStep(condition, action)));
+			Object[] result = steps.activate(0);
+			assertEquals((int) result[0], 3);
+		} catch (TooManyStepsException e) {
+			fail("Too Many Steps Exception");
+		}
+	}
+	
+	@Test
+	void conditionTest() {
+		Action action = new Action() {
+			public Object[] execute(Object...objects) {
+				int cpt = 0;
+				for(Object object: objects) {
+					cpt = (int) object;
+					cpt++;
+				}
+				Object[] result = new Object[1];
+				result[0] = (Object) cpt;
+				return result;
+			}
+		};
+		Condition condition = new Condition() {
+			public boolean validate(Object...objects) {
+				for(Object object: objects) {
+					return (int) object > 10;
+				}
+				return false;
+			}
+		};
+		try {
+			Step steps = new SimpleStep(condition, action, new SimpleStep(condition, action, new SimpleStep(condition, action)));
+			Object[] resultTrue = steps.activate(11);
+			Object[] resultFalse = steps.activate(9);
+			assertEquals((int) resultTrue[0], 14);
+			assertNull(resultFalse); // The whole object become null
+		} catch (TooManyStepsException e) {
+			fail("Too Many Steps Exception");
+		}
+		
+	}
 }

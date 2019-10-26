@@ -51,9 +51,14 @@ public class SimpleStep implements Step {
 	}
 
 	@Override
-	public void activate(Object... objects) {
-		// TODO Auto-generated method stub
-		
+	public Object[] activate(Object... objects) {
+		if(this.validateCondition(objects)) {
+			objects = this.executeActions(objects);
+			if(this.hasNext())
+				return this.getNextStep().activate(objects);
+			return objects;
+		}
+		return null;
 	}
 
 	@Override
