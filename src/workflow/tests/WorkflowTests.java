@@ -8,6 +8,7 @@ import workflow.Step;
 import workflow.exceptions.TooManyStepsException;
 import workflow.parameters.Action;
 import workflow.parameters.Condition;
+import workflow.steps.IfElseStep;
 import workflow.steps.SimpleStep;
 
 class WorkflowTests {
@@ -148,5 +149,46 @@ class WorkflowTests {
 			fail("Too Many Steps Exception");
 		}
 		
+	}
+	
+	@Test
+	void IfElseStepTest() {
+		Condition condition = new Condition() {
+			public boolean validate(Object...objects) {
+				return (boolean) objects[0];
+			}
+		};
+		Condition conditionTrue = new Condition() {
+			public boolean validate(Object...objects) {
+				return true;
+			}
+		};
+		Action ifAction = new Action() {
+			public Object[] execute(Object...objects) {
+				objects[0] = "IF";
+				return objects;
+			}
+		};
+		Action elseAction = new Action() {
+			public Object[] execute(Object...objects) {
+				objects[0] = "ELSE";
+				return objects;
+			}
+		};
+		
+		String stringResult = "+ IfElseStep IF + SimpleStep \n+ IfElseStep ELSE + SimpleStep ";
+		// ============================================
+		
+		try {
+			Step ifStep = new SimpleStep(conditionTrue, ifAction);
+			Step elseStep = new SimpleStep(conditionTrue, elseAction);
+			Step ifElseStep = new IfElseStep(condition, ifStep, elseStep);
+			assertEquals("IF", ifElseStep.activate(true)[0]);
+			assertEquals("ELSE", ifElseStep.activate(false)[0]);
+			System.out.println(ifElseStep.toString());
+			assertEquals(stringResult, ifElseStep.toString());
+		} catch (TooManyStepsException e) {
+			fail("Too Many Steps Exception");
+		}
 	}
 }
