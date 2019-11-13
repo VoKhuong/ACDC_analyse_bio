@@ -32,7 +32,7 @@ public class IfElseStep implements Step {
 
 	@Override
 	public boolean hasNext() {
-		return this.ifStep != null && this.elseStep != null;
+		return this.ifStep != null || this.elseStep != null;
 	}
 
 	@Override
@@ -64,15 +64,20 @@ public class IfElseStep implements Step {
 		return Math.max(ifLength, elseLength);
 	}
 	
+	@Override
 	public String toString() {
-		String ifString = new String();
-		String elseString = new String();
+		StringBuilder ifString = new StringBuilder();
+		StringBuilder elseString = new StringBuilder();
+		StringBuilder result = new StringBuilder("+ IFELSESTEP \n");
 		if(this.ifStep != null) {
-			ifString = "+ IfElseStep IF " + this.ifStep.toString();
+			ifString.append("= IF " + this.ifStep.toString());
 		}
 		if(this.ifStep != null) {
-			elseString = "+ IfElseStep ELSE " + this.elseStep.toString();
+			elseString.append("= ELSE " + this.ifStep.toString());
 		}
-		return ifString + '\n' + elseString;
+		result.append(ifString);
+		result.append("\n");
+		result.append(elseString);
+		return result.toString();
 	}
 }

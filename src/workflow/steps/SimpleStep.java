@@ -35,9 +35,8 @@ public class SimpleStep implements Step {
 	public void addLast(Step... steps) throws TooManyStepsException {
 		if(this.hasNext())
 			this.getNextStep().addLast(steps);
-		else {
+		else
 			this.add(steps);
-		}
 	}
 
 	@Override

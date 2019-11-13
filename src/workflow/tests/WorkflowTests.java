@@ -9,6 +9,7 @@ import workflow.exceptions.TooManyStepsException;
 import workflow.parameters.Action;
 import workflow.parameters.Condition;
 import workflow.steps.IfElseStep;
+import workflow.steps.ParallelStep;
 import workflow.steps.SimpleStep;
 
 class WorkflowTests {
@@ -176,7 +177,7 @@ class WorkflowTests {
 			}
 		};
 		
-		String stringResult = "+ IfElseStep IF + SimpleStep \n+ IfElseStep ELSE + SimpleStep ";
+		String stringResult = "+ IFELSESTEP \n= IF + SimpleStep \n= ELSE + SimpleStep ";
 		// ============================================
 		
 		try {
@@ -185,10 +186,82 @@ class WorkflowTests {
 			Step ifElseStep = new IfElseStep(condition, ifStep, elseStep);
 			assertEquals("IF", ifElseStep.activate(true)[0]);
 			assertEquals("ELSE", ifElseStep.activate(false)[0]);
-			System.out.println(ifElseStep.toString());
 			assertEquals(stringResult, ifElseStep.toString());
+			// System.out.println(ifElseStep.toString());
 		} catch (TooManyStepsException e) {
 			fail("Too Many Steps Exception");
 		}
+	}
+	
+	@Test
+	void ParallelStepTest() {
+		Action actionPlus = new Action() {
+			public Object[] execute(Object...objects) {
+				int cpt = 0;
+				// System.out.println("PLUS");
+				for(Object object: objects) {
+					cpt = (int) object;
+					cpt++;
+				}
+				Object[] result = new Object[1];
+				result[0] = (Object) cpt;
+				return result;
+			}
+		};
+		Action actionAddRes = new Action() {
+			public Object[] execute(Object...objects) {
+				Object[] result = new Object[objects.length + 1];
+				for(int i = 0; i < objects.length; i++)
+					result[i] = objects[i];
+				result[objects.length] = (Object) "NEW";
+				return result;
+			}
+		};
+		Action actionMinus = new Action() {
+			public Object[] execute(Object...objects) {
+				int cpt = 0;
+				// System.out.println("MINUS");
+				for(Object object: objects) {
+					cpt = (int) object;
+					cpt--;
+				}
+				Object[] result = new Object[1];
+				result[0] = (Object) cpt;
+				return result;
+			}
+		};
+		Condition conditionTrue = new Condition() {
+			public boolean validate(Object...objects) {
+				return true;
+			}
+		};
+		
+		StringBuilder resultString = new StringBuilder("+ PARALLELSTEP \n");
+		resultString.append("= + SimpleStep + SimpleStep + SimpleStep + SimpleStep + SimpleStep + SimpleStep + SimpleStep + SimpleStep + SimpleStep + SimpleStep + SimpleStep \n");
+		resultString.append("= + SimpleStep + SimpleStep + SimpleStep + SimpleStep + SimpleStep + SimpleStep + SimpleStep + SimpleStep + SimpleStep + SimpleStep + SimpleStep \n");
+		resultString.append("+ SimpleStep ");
+		
+		// ===========================================
+		
+		try {
+			Step stepPlus = new SimpleStep(conditionTrue, actionPlus);
+			Step stepMinus = new SimpleStep(conditionTrue, actionMinus);
+			Step stepAddRes = new SimpleStep(conditionTrue, actionAddRes);
+			Step parallelStep = new ParallelStep(conditionTrue, stepPlus, stepMinus, stepAddRes);
+			for(int i = 0; i < 10; i++) {
+				stepPlus.addLast(new SimpleStep(conditionTrue, actionPlus));
+				stepMinus.addLast(new SimpleStep(conditionTrue, actionMinus));
+			}
+			Object[] result = parallelStep.activate(0);
+			assertEquals(11, (int) result[0]);
+			assertEquals(-11, (int) result[1]);
+			assertEquals("NEW", result[2]);
+			assertEquals(resultString.toString(), parallelStep.toString());
+			// System.out.println(parallelStep.toString());
+			
+		} catch (TooManyStepsException e) {
+			fail("Too Many Steps Exception");
+		}
+		
 	}
 }
