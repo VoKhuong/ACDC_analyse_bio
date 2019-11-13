@@ -8,6 +8,7 @@ import workflow.Step;
 import workflow.exceptions.TooManyStepsException;
 import workflow.parameters.Action;
 import workflow.parameters.Condition;
+import workflow.parameters.exemples.DistanceKhi2_1D;
 import workflow.steps.IfElseStep;
 import workflow.steps.ParallelStep;
 import workflow.steps.SimpleStep;
@@ -262,6 +263,32 @@ class WorkflowTests {
 		} catch (TooManyStepsException e) {
 			fail("Too Many Steps Exception");
 		}
-		
+	}
+	
+	@Test
+	void DistanceKhi2Test() {
+		Action khi2 = new DistanceKhi2_1D();
+		Condition conditionTrue = new Condition() {
+			public boolean validate(Object...objects) {
+				return true;
+			}
+		};
+		double[] estimations = {1, 2, 3, 4, 5};
+		double[] observations = {1, 2, 3, 4, 5};
+		double[] observations2 = {2, 2, 2, 2, 2};
+		double[] observations3 = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+		double result = -1;
+		String strErr = new String();
+		try {
+			Step step = new SimpleStep(conditionTrue, khi2);
+			result = (double) step.activate(estimations, observations)[0];
+			assertEquals(result, 0);
+			result = (double) step.activate(estimations, observations2)[0];
+			assertEquals(result, 7.5);
+			strErr = (String) step.activate(estimations, observations3)[0];
+			assertEquals(strErr, "ERROR");
+		} catch (TooManyStepsException e) {
+			fail("Too Many Steps Exception");
+		}
 	}
 }
