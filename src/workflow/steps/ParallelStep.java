@@ -6,6 +6,16 @@ import workflow.Step;
 import workflow.exceptions.TooManyStepsException;
 import workflow.parameters.Condition;
 
+/**
+ * Parallelism implementation of a workflow
+ * if a condition is met, it will run stepOne & stepTwo at the same time
+ * when both steps are done, it will run nextStep (if declared)
+ * otherwise it will return the output
+ * @author Vo Lam Nhat Khuong
+ * @since 17/11/2019
+ * @version 0.2
+ *
+ */
 public class ParallelStep implements Step {
 
 	private Condition condition;
@@ -13,6 +23,13 @@ public class ParallelStep implements Step {
 	private Step stepTwo;
 	private Step nextStep;
 	
+	/**
+	 * @param condition Condition to meet
+	 * @param stepOne first parallel workflow to execute
+	 * @param stepTwo second parallel workflow to execute
+	 * @param steps workflow to execute once the two before are done
+	 * @throws TooManyStepsException Not supposed to occur in this case
+	 */
 	public ParallelStep(Condition condition, Step stepOne, Step stepTwo, Step... steps) throws TooManyStepsException {
 		this.condition = condition;
 		this.stepOne = stepOne;
@@ -97,6 +114,11 @@ public class ParallelStep implements Step {
 		return this.condition.validate(objects);
 	}
 
+	/**
+	 * Return the length of the workflow from this block
+	 * Will take the longest workflow between the two parallel workflow
+	 * @return int length
+	 */
 	@Override
 	public int length() {
 		int ifLength = 1;

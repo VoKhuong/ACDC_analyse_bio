@@ -2,6 +2,13 @@ package workflow.parameters.exemples;
 
 import workflow.parameters.Action;
 
+
+/**
+ * Example of an action calculating Khi 2 distance
+ * @author Vo Lam Nhat Khuong
+ * @since 17/11/2019
+ *
+ */
 public class DistanceKhi2_1D implements Action {
 
 	@Override

@@ -7,6 +7,14 @@ import workflow.exceptions.TooManyStepsException;
 import workflow.parameters.Action;
 import workflow.parameters.Condition;
 
+/**
+ * Basic step used in a workflow
+ * If a condition is met, it will be trigerred
+ * Once done, it will go to the nextStep or return the output
+ * @author Vo Lam Nhat Khuong
+ * @since 17/11/2019
+ * @version 0.1
+ */
 public class SimpleStep implements Step {
 	
 	private Step nextStep;

@@ -21,7 +21,7 @@ public interface Step {
 	
 	/**
 	 * add new steps to the last step
-	 * add at the last position of the list
+	 * add at the last position of the list if possible
 	 * @param steps
 	 * @since 11/10/2019
 	 */
@@ -43,6 +43,7 @@ public interface Step {
 	
 	/**
 	 * activate the step
+	 * Look if condition is true and execute actions
 	 * @param objects data
 	 * @see workflow interpreter
 	 * @since 11/10/2019
@@ -64,5 +65,11 @@ public interface Step {
 	 */
 	public String toString();
 	
+	
+	
+	/**
+	 * @return int length of the workflow from this block
+	 * @since 17/11/2019
+	 */
 	public int length();
 }

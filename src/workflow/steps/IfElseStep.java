@@ -4,12 +4,27 @@ import workflow.Step;
 import workflow.exceptions.TooManyStepsException;
 import workflow.parameters.Condition;
 
+/**
+ * Representation of a condition block :
+ * If True then it will go to the ifStep
+ * Else False then it will go to the other step
+ * @author Vo Lam Nhat Khuong
+ * @since 17/11/2019
+ * @version 0.3
+ *
+ */
 public class IfElseStep implements Step {
 	
 	private Condition condition;
 	private Step ifStep;
 	private Step elseStep;
 	
+	/**
+	 * @param condition Condition to know which Workflow will be runned
+	 * @param ifStep Workflow to run if condition is True
+	 * @param elseStep Workflow to run if condition is False
+	 * @throws TooManyStepsException if more than 2 steps is passed as parameters (in add function)
+	 */
 	public IfElseStep(Condition condition, Step ifStep, Step elseStep) throws TooManyStepsException {
 		this.condition = condition;
 		this.add(ifStep, elseStep);
@@ -25,6 +40,11 @@ public class IfElseStep implements Step {
 			throw new TooManyStepsException();
 	}
 
+	/**
+	 * Useless in this case
+	 * Cannot addLast() to an IfElseStep
+	 * Basically does the same thing as add() function
+	 */
 	@Override
 	public void addLast(Step... steps) throws TooManyStepsException {
 		this.add(steps);
@@ -52,6 +72,10 @@ public class IfElseStep implements Step {
 		return condition.validate(objects);
 	}
 
+	/**
+	 * Get the longest length from this block between the two Workflow
+	 * @return int length
+	 */
 	@Override
 	public int length() {
 		int ifLength = 1;
