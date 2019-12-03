@@ -1,0 +1,5 @@
+package WorkFlowEngine;
+
+interface Flowable {
+
+}
